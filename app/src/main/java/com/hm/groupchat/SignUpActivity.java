@@ -1,9 +1,8 @@
 package com.hm.groupchat;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,27 +15,26 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "SignUpActivity";
 
     EditText emailEditText;
     EditText passwordEditText;
-
-
 
     private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_sign_up);
+
 
         emailEditText = (EditText) findViewById(R.id.email_edit_text);
         passwordEditText = (EditText) findViewById(R.id.password_edit_text);
 
-        Button signInButton = (Button) findViewById(R.id.sign_in_button);
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        Button signUpButton = (Button) findViewById(R.id.sign_up_button);
+        signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -45,67 +43,41 @@ public class MainActivity extends AppCompatActivity {
 
                 if(email.equals("") || password.equals("")) {
 
-                    Toast.makeText(MainActivity.this, "Please enter your email and password.",
+                    Toast.makeText(SignUpActivity.this, "Please enter your email and password.",
                             Toast.LENGTH_LONG).show();
                 }
 
                 else {
 
-                    signIn(email, password);
+                    signUp(email, password);
                 }
             }
         });
 
-        Button signUpButton = (Button) findViewById(R.id.sign_up_button);
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-                startActivity(intent);
-            }
-        });
-
-
         mAuth = FirebaseAuth.getInstance();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    private void signUp(String email, String password) {
 
-        if(mAuth.getCurrentUser() == null) {
-
-            //Not logged in
-        }
-
-        else {
-
-
-        }
-    }
-
-    private void signIn(String email, String password) {
-
-        mAuth.signInWithEmailAndPassword(email, password)
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signIn:success");
+                            Log.d(TAG, "signUp:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             Log.d(TAG, "User = "+user.toString());
 
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signIn:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                            Log.w(TAG, "signUp:failure", task.getException());
+                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-
                         }
 
+                        // ...
                     }
                 });
     }
