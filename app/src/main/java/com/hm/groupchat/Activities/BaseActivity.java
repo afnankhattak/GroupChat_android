@@ -1,7 +1,9 @@
-package com.hm.groupchat;
+package com.hm.groupchat.Activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+import com.hm.groupchat.CustomViews.ProgressLoader;
 
 public class BaseActivity extends AppCompatActivity {
 

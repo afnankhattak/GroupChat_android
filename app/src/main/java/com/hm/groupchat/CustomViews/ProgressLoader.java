@@ -1,13 +1,16 @@
-package com.hm.groupchat;
+package com.hm.groupchat.CustomViews;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.hm.groupchat.R;
 
 public class ProgressLoader  {
 
@@ -75,7 +78,7 @@ public class ProgressLoader  {
 			tv =new TextView(context);
 			tv.setText(displayMessage);
 			tv.setGravity(Gravity.CENTER);
-			tv.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+			tv.setTextColor(Color.WHITE);
 			layout.addView(tv,params);
 			addContentView(layout, params);
 		}
