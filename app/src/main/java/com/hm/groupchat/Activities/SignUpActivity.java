@@ -1,5 +1,6 @@
 package com.hm.groupchat.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -78,12 +79,18 @@ public class SignUpActivity extends BaseActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signUp:failure", task.getException());
-                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+
+                            goToChatScreen();
                         }
 
                         // ...
                     }
                 });
+    }
+
+    private void goToChatScreen() {
+
+        Intent intent = new Intent(SignUpActivity.this, ChatActivity.class);
+        startActivity(intent);
     }
 }

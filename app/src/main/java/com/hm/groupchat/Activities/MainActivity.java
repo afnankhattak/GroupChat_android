@@ -76,12 +76,12 @@ public class MainActivity extends BaseActivity {
 
         if(mAuth.getCurrentUser() == null) {
 
-            //Not logged in
+            //Not logged in do nothing
         }
 
         else {
 
-
+            goToChatScreen();
         }
     }
 
@@ -106,12 +106,18 @@ public class MainActivity extends BaseActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signIn:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+
+                            goToChatScreen();
 
                         }
 
                     }
                 });
+    }
+
+    private void goToChatScreen() {
+
+        Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+        startActivity(intent);
     }
 }
