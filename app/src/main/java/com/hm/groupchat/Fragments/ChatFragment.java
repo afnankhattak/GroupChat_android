@@ -11,6 +11,8 @@ import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.hm.groupchat.Models.Author;
 import com.hm.groupchat.Models.Message;
 import com.hm.groupchat.R;
@@ -29,6 +31,8 @@ public class ChatFragment extends Fragment {
 
     private MessageInput messageInput;
     private MessagesList messagesList;
+
+    private DatabaseReference messagesReference;
 
     private Author currentUser;
 
@@ -68,9 +72,13 @@ public class ChatFragment extends Fragment {
 
                 adapter.addToStart(message, true);
 
+                messagesReference.child("text").setValue(message.getText());
+
                 return true;
             }
         });
+
+        messagesReference = FirebaseDatabase.getInstance().getReference("messages");
 
         return view;
     }
