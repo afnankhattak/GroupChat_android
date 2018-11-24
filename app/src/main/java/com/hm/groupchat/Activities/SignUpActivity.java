@@ -76,11 +76,13 @@ public class SignUpActivity extends BaseActivity {
 
                             Log.d(TAG, "User = "+user.toString());
 
+                            goToChatScreen();
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signUp:failure", task.getException());
 
-                            goToChatScreen();
+                            Toast.makeText(getBaseContext(), task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         }
 
                         // ...

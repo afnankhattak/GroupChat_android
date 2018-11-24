@@ -3,6 +3,8 @@ package com.hm.groupchat.Models;
 import com.stfalcon.chatkit.commons.models.IMessage;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Message implements IMessage {
 
@@ -11,10 +13,14 @@ public class Message implements IMessage {
     private Author author;
     private Date createdAt;
 
-    public Message(String text, Author author, Date createdAt) {
+    public Message() {
 
-        //todo: set message id
-        //this.id =
+
+    }
+
+    public Message(String  id, String text, Author author, Date createdAt) {
+
+        this.id = id;
         this.text = text;
         this.author = author;
         this.createdAt = createdAt;
@@ -38,5 +44,16 @@ public class Message implements IMessage {
     @Override
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public Map<String, Object> toMap() {
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("text", text);
+        result.put("author", author.getId());
+        result.put("createdAt", createdAt.getTime());
+
+        return result;
     }
 }

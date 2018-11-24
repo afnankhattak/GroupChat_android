@@ -68,11 +68,13 @@ public class ChatFragment extends Fragment {
             @Override
             public boolean onSubmit(CharSequence input) {
 
-                Message message = new Message(input.toString(), currentUser, new Date());
+                String key = messagesReference.push().getKey();
+
+                Message message = new Message(key, input.toString(), currentUser, new Date());
 
                 adapter.addToStart(message, true);
 
-                messagesReference.child("text").setValue(message.getText());
+                sendMessage(message);
 
                 return true;
             }
@@ -81,6 +83,11 @@ public class ChatFragment extends Fragment {
         messagesReference = FirebaseDatabase.getInstance().getReference("messages");
 
         return view;
+    }
+
+    private void sendMessage(Message message) {
+
+        messagesReference.child(message.getId()).setValue(message.toMap());
     }
 
 }
