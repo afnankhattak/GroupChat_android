@@ -2,8 +2,10 @@ package com.hm.groupchat.Fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,11 @@ import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.hm.groupchat.Models.Author;
 import com.hm.groupchat.Models.Message;
 import com.hm.groupchat.R;
@@ -22,12 +27,15 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ChatFragment extends Fragment {
+
+    private MessagesListAdapter<Message> adapter;
 
     private MessageInput messageInput;
     private MessagesList messagesList;
@@ -61,7 +69,7 @@ public class ChatFragment extends Fragment {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUser = new Author(firebaseUser.getUid(), firebaseUser.getDisplayName());
 
-        final MessagesListAdapter<Message> adapter = new MessagesListAdapter<>(currentUser.getId(), imageLoader);
+        adapter = new MessagesListAdapter<>(currentUser.getId(), imageLoader);
         messagesList.setAdapter(adapter);
 
         messageInput.setInputListener(new MessageInput.InputListener() {
@@ -82,7 +90,41 @@ public class ChatFragment extends Fragment {
 
         messagesReference = FirebaseDatabase.getInstance().getReference("messages");
 
+        loadMessages();
+
         return view;
+    }
+
+    private void loadMessages() {
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Log.v("ChatFragment", dataSnapshot.toString());
+
+                ArrayList<Message> messages = new ArrayList<>();
+
+                for(DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+
+                    Long timeStamp = (Long) messageSnapshot.child("createdAt").getValue();
+
+                    Message message = new Message(messageSnapshot.child("id").getValue().toString(), messageSnapshot.child("text").getValue().toString(), new Author(), new Date(timeStamp));
+
+                    messages.add(message);
+                }
+
+                adapter.addToEnd(messages, true);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                Log.v("ChatFragment", databaseError.toString());
+            }
+        };
+
+        messagesReference.addValueEventListener(listener);
     }
 
     private void sendMessage(Message message) {
